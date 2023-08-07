@@ -1,0 +1,105 @@
+CREATE DATABASE HotelsDB;
+USE HotelsDB;
+
+CREATE TABLE Cities
+(
+cityID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+cityName VARCHAR(20) 
+);
+
+CREATE TABLE HOTELS
+(
+hotelID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+hotelName VARCHAR(20),
+starsCount INT NOT NULL,
+creationData DATE,
+cityID INT,
+FOREIGN KEY(cityID) REFERENCES Cities(cityID)
+);
+
+CREATE TABLE Rooms(
+roomID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+comfortLevel VARCHAR(20),
+hotelID INT,
+FOREIGN KEY (hotelID) REFERENCES Hotels(hotelID)
+);
+
+CREATE TABLE Clients(
+clientID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+clientName VARCHAR(50),
+clientNumber LONG
+);
+
+CREATE TABLE Orders(
+orderID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+clientID INT,
+roomID INT,
+FOREIGN KEY (clientID) REFERENCES Clients(clientID),
+FOREIGN KEY (roomID) REFERENCES Rooms(roomID)
+);
+
+SELECT * FROM Clients;
+SELECT clientName, clientNumber FROM Clients;
+SELECT clientName, clientNumber FROM Clients WHERE clientName= 'Anna';
+SELECT clientName, clientNumber FROM Clients WHERE clientName LIKE 'A%';
+SELECT clientName, clientNumber FROM Clients WHERE clientName LIKE '%a';
+SELECT clientName, clientNumber FROM Clients WHERE clientName LIKE '%a%';
+SELECT clientName, clientNumber FROM Clients WHERE clientName LIKE '%i%';
+SELECT clientName, clientNumber FROM Clients WHERE clientNumber LIKE '%50%';
+SELECT clientName, clientNumber FROM Clients WHERE clientNumber >1;
+SELECT clientName, clientNumber FROM Clients WHERE clientNumber <1;
+SELECT clientName, clientNumber FROM Clients WHERE clientNumber >1 AND clientNumber <0679654123;
+SELECT clientName, clientNumber FROM Clients WHERE clientNumber = 0676733524 OR clientNumber =0676770034;
+SELECT clientName, clientNumber FROM Clients WHERE clientNumber <>0676733524;
+
+
+SELECT COUNT(*) FROM Cities;
+SELECT COUNT(*) FROM Clients;
+SELECT COUNT(clientName) FROM Clients;
+SELECT COUNT(clientName) FROM Clients WHERE clientName LIKE "%a";
+SELECT MIN(starsCount) FROM Hotels;
+SELECT *, MIN(starsCount) FROM Hotels;
+SELECT * FROM Hotels WHERE starsCount =(SELECT MIN(starsCount) FROM Hotels);
+
+SELECT hotelID, Count(hotelID) FROM Rooms WHERE HotelID=1;
+SELECT MIN(hotelName) FROM Hotels;
+SELECT MIN(creationData) FROM Hotels;
+SELECT MIN(creationData) AS MinimumCount FROM Hotels;
+SELECT MAX(starsCount) FROM Hotels;
+SELECT AVG(clientNumber) FROM Clients;
+SELECT SUM(clientNumber) FROM Clients;
+
+SELECT AVG(salary) FROM Clients;
+SELECT MAX(salary) FROM Clients;
+SELECT COUNT(salary), salary FROM Clients GROUP BY salary;
+SELECT COUNT(age), age FROM Clients GROUP BY age;
+SELECT COUNT(age), age FROM Clients GROUP BY age HAVING age>=30;
+SELECT COUNT(age), age, clientName FROM Clients GROUP BY age HAVING clientName LIKE '%a';
+SELECT * FROM hotelsdb.clients ORDER BY clientName;
+SELECT * FROM hotelsdb.clients ORDER BY clientName DESC;
+SELECT * FROM hotelsdb.clients ORDER BY clientName ASC;
+SELECT * FROM hotelsdb.clients ORDER BY salary;
+SELECT * FROM hotelsdb.clients ORDER BY salary DESC;
+SELECT * FROM hotelsdb.clients ORDER BY salary LIMIT 5;
+SELECT * FROM hotelsdb.clients ORDER BY salary DESC LIMIT 5;
+SELECT * FROM hotelsdb.clients ORDER BY salary DESC LIMIT 5 OFFSET 2;
+
+SELECT * FROM Cities JOIN Hotels ON Cities.CityID = Hotels.CityID;
+SELECT * FROM Cities INNER JOIN Hotels ON Cities.CityID = Hotels.CityID;
+SELECT * FROM Cities LEFT JOIN Hotels ON Cities.CityID = Hotels.CityID;
+SELECT * FROM Hotels LEFT JOIN Cities ON Cities.CityID = Hotels.CityID;
+SELECT * FROM Cities RIGHT JOIN Hotels ON Cities.CityID = Hotels.CityID;
+SELECT * FROM Hotels RIGHT JOIN Cities ON Cities.CityID = Hotels.CityID;
+
+SELECT * FROM Hotels RIGHT JOIN Cities ON Cities.CityID = Hotels.CityID
+UNION ALL
+SELECT * FROM Hotels LEFT JOIN Cities ON Cities.CityID = Hotels.CityID;
+
+SELECT * FROM Hotels RIGHT JOIN Cities ON Cities.CityID = Hotels.CityID
+UNION ALL
+SELECT * FROM Hotels LEFT JOIN Cities ON Cities.CityID = Hotels.CityID WHERE Cities.cityID IS NOT NULL;
+
+UPDATE Hotels SET starsCount=4 WHERE hotelID=1;
+UPDATE Hotels SET starsCount=5 WHERE hotelID=2;
+DELETE FROM hotelsdb.hotels WHERE hotelName="Lviv";
+DROP TABLE hotels;
